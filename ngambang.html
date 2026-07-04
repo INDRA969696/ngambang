@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating Tools HP</title>
+    <style>
+        /* ==================== 1. STYLE CSS ==================== */
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent; /* Wajib transparent biar wrapper apk lu gak nutupin layar HP */
+            font-family: sans-serif;
+        }
+
+        /* Parent Div: Wajib fixed biar posisinya ngambang terus */
+        #floating-widget {
+            position: fixed;
+            top: 50px;
+            left: 50px;
+            width: 200px;
+            background: rgba(40, 44, 52, 0.95);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        /* Header buat handle drag/geser pake jempol */
+        #widget-header {
+            padding: 12px 10px;
+            cursor: move;
+            background: #4caf50;
+            font-weight: bold;
+            font-size: 12px;
+            user-select: none;
+            text-align: center;
+        }
+
+        .widget-content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .widget-content p {
+            margin: 5px 0;
+            font-size: 13px;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:active {
+            background: #0b7dda; /* Efek pas diteken di HP */
+        }
+
+        /* Tombol kembali biar beda warna */
+        .btn-back {
+            background: #e91e63;
+            margin-top: 5px;
+        }
+        .btn-back:active {
+            background: #c2185b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 2. STRUKTUR HTML ==================== -->
+    <div id="floating-widget">
+        <!-- Bagian yang bisa ditarik -->
+        <div id="widget-header">⚡ Tools Ngambang</div>
+        
+        <!-- ================= HALAMAN 1: MENU UTAMA ================= -->
+        <div id="menu-utama" class="menu-page">
+            <div class="widget-content">
+                <p>Menu Utama</p>
+                <button onclick="pindahMenu('menu-fitur')">Buka Fitur ></button>
+                <button onclick="pindahMenu('menu-pengaturan')">Pengaturan ></button>
+            </div>
+        </div>
+
+        <!-- ================= HALAMAN 2: MENU FITUR ================= -->
+        <div id="menu-fitur" class="menu-page" style="display: none;">
+            <div class="widget-content">
+                <p>Menu Fitur</p>
+                <button onclick="aksiSatu()">Opsi A</button>
+                <button onclick="aksiDua()">Opsi B</button>
+                <button class="btn-back" onclick="pindahMenu('menu-utama')">< Kembali</button>
+            </div>
+        </div>
+
+        <!-- ================= HALAMAN 3: MENU PENGATURAN ================= -->
+        <div id="menu-pengaturan" class="menu-page" style="display: none;">
+            <div class="widget-content">
+                <p>Pengaturan</p>
+                <button onclick="alert('Fitur Reset')">Reset Tools</button>
+                <button class="btn-back" onclick="pindahMenu('menu-utama')">< Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 3. SCRIPT JAVASCRIPT ==================== -->
+    <script>
+        const widget = document.getElementById("floating-widget");
+        const header = document.getElementById("widget-header");
+
+        let startX = 0, startY = 0;
+
+        // ---------------- LOGIKA DIGESER (TOUCHSCREEN) ----------------
+        header.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            startX = touch.clientX - widget.offsetLeft;
+            startY = touch.clientY - widget.offsetTop;
+        });
+
+        header.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Mencegah layar utama ikut ke-scroll
+            const touch = e.touches[0];
+            
+            widget.style.left = (touch.clientX - startX) + 'px';
+            widget.style.top = (touch.clientY - startY) + 'px';
+        }, { passive: false });
+
+
+        // ---------------- LOGIKA PINDAH MENU INTERNAL ----------------
+        function pindahMenu(menuId) {
+            // Sembunyiin semua class menu-page dulu
+            const semuaMenu = document.querySelectorAll('.menu-page');
+            semuaMenu.forEach(menu => {
+                menu.style.display = 'none';
+            });
+
+            // Tampilin menu tujuan berdasarkan ID
+            const menuTujuan = document.getElementById(menuId);
+            if (menuTujuan) {
+                menuTujuan.style.display = 'block';
+            }
+        }
+
+
+        // ---------------- ACTION TOMBOL ----------------
+        function aksiSatu() {
+            alert("Opsi A Aktif!");
+        }
+
+        function aksiDua() {
+            alert("Opsi B Aktif!");
+        }
+    </script>
+</body>
+</html>
